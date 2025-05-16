@@ -1,0 +1,8 @@
+pandas
+numpy
+matplotlib
+requests
+scikit-learn  # For machine learning
+gpxpy         # For parsing GPX files
+streamlit
+datetime
