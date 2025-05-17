@@ -15,7 +15,7 @@ def load_csv_file(file_path):
             'timestamp': row['timestamp'],
             'date': row['date'],
             'ISO8601': row['ISO8601'],
-            'heart_rate': row['hr'] if pd.notna(row['hr']) else None,
+            'heart_rate': row['heart_rate'] if pd.notna(row['heart_rate']) else None,
             'power': row['power'] if pd.notna(row['power']) else None,
             'cadence': row['cadence'] if pd.notna(row['cadence']) else None,
             'latitude': row['latitude'] if pd.notna(row['latitude']) else None,

@@ -5,7 +5,7 @@ from utils.stats_utils import analyze_workout_data, format_stats_for_ai
 from model.llm_handler import ask_local_llm
 from model.logger import log_workout  # Updated import
 
-# Initialize SQLite database and create the workouts table if not already created
+"""# Initialize SQLite database and create the workouts table if not already created
 def init_db():
     conn = sqlite3.connect('data/workout_log.db')
     cursor = conn.cursor()
@@ -17,14 +17,17 @@ def init_db():
         total_distance REAL,
         duration_min REAL,
         avg_heart_rate INTEGER,
-        cadence INTEGER,
-        calories INTEGER
+        avg_cadence INTEGER,
+        avg_power INTEGER,
+        avg_elevation INTEGER,
+        elevation_gain INTEGER,
+        total_calories INTEGER
     )
     ''')
     conn.commit()
     conn.close()
-
-
+"""
+"""
 def main():
     # Initialize DB and ensure the table is there
     init_db()
@@ -54,3 +57,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""

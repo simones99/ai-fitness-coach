@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import numpy as np
 import os
+import re
 import datetime as dt
 from model.llm_handler import ask_local_llm
 from model.logger import log_workout  # Updated import
@@ -66,7 +67,10 @@ def analyze_workout_data(workout_data, user_gender, weight_kg, height_cm, age):
         raise ValueError("Workout data is improperly formatted, expected a list of dictionaries.")
 
     # Calculate total distance and other stats
-    total_distance = np.float64(df[['distance']].max())
+    if 'distance' in df and not df['distance'].empty:
+        total_distance = float(df['distance'].max())
+    else:
+        total_distance = 0.0
     df['date'] = pd.to_datetime(df['date'])
     workout_duration = (df.loc[len(df) - 1, 'date'] - df.loc[0, 'date']).total_seconds() / 60
 
@@ -96,11 +100,18 @@ def analyze_workout_data(workout_data, user_gender, weight_kg, height_cm, age):
 
     return stats
 
-def format_stats_for_ai(stats):
+def format_stats_for_ai(stats, user_gender, age, weight_kg, height_cm, fitness_goal, workout_type, fitness_level, workout_preference, has_injury, weekly_availability, time_per_session, target_focus):
     """
     Formats workout stats into a natural language summary for input to an AI model.
     """
     summary = (
+        f"User profile: {fitness_level.lower()} level, goal is to {fitness_goal.lower()} with a focus on {target_focus.lower()}. "
+        f"Prefers {workout_preference.lower()} workouts, available {weekly_availability} days/week for {time_per_session} minutes per session. "
+    )
+    summary += f"Your goal is to {fitness_goal.lower()}. This was a {workout_type.lower()} workout. "
+    summary += (
+        f"You are a {user_gender} and you are {age} years old."
+        f"You weigh {weight_kg} kg and are {height_cm} m tall."
         f"In the last workout, you covered {stats['total_distance']:.2f} m "
         f"in {stats['workout_duration']} minutes. "
     )
@@ -116,10 +127,23 @@ def format_stats_for_ai(stats):
         summary += f"You worked out at {stats['avg_elevation']:.0f}. "
     if stats['elevation_gain'] is not None:
         summary += f"During your workout, your elevation gain was {stats['elevation_gain']:.2f} m."
-    
+    if has_injury:
+        summary += f"Note: the user has the following injury or limitation: {has_injury}. "
     summary += "Based on this performance and training history, suggest the next workout."
     return summary
 
+def extract_text_after_tag(text, tag):
+    '''
+    Extracts the text that appears after a given tag in the input text.
+    The tag itself is not included in the returned result.
+    '''
+    match = re.search(tag, text, re.IGNORECASE)
+    if match:
+        return text[match.end():].strip()
+    else:
+        return ""  # or return None, depending on your needs
+    
+'''
 def display_workout_data(uploaded_file):
     if uploaded_file is not None:
         # Save the uploaded file to a temporary location
@@ -140,7 +164,7 @@ def display_workout_data(uploaded_file):
         
         # Display the workout summary
         st.write("📊 Workout Summary")
-        st.write(f"**Total Distance:** {stats['total_distance']:.2f} km")
+        st.write(f"**Total Distance:** {stats['total_distance']:.2f} m")
         st.write(f"**Workout Duration:** {stats['workout_duration']} minutes")
         st.write(f"**Average Heart Rate:** {stats['avg_heart_rate'] if stats['avg_heart_rate'] is not None else 'N/A'} bpm")
         st.write(f"**Average Cadence:** {stats['avg_cadence'] if stats['avg_cadence'] is not None else 'N/A':.2f} steps/min")
@@ -159,7 +183,7 @@ def display_workout_data(uploaded_file):
         log_workout(temp_file_path, stats)
     else:
         st.warning("Please upload a CSV file to analyze your workout data.")
-
+'''
 def main():
     st.title("AI Fitness Coach - Workout Analyzer")
 
