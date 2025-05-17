@@ -150,7 +150,7 @@ def display_workout_data(uploaded_file, user_gender, weight_kg, height_cm, age, 
     # Insert workout visualisations here (after stats and before AI prompt)
     workout_log = fetch_workout_log()
     if not workout_log.empty:
-        st.subheader("📊 Workout Visualisations")
+        st.subheader("📊 Last Workout in Context")
 
         col1, col2 = st.columns(2)
         with col1:
