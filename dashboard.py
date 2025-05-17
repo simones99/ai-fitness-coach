@@ -188,7 +188,7 @@ def display_workout_data(uploaded_file, user_gender, weight_kg, height_cm, age, 
     st.success(suggested_workout)
 
     # Log workout in SQLite
-    log_workout(uploaded_file, stats, workout_type, workout_date)
+    log_workout(uploaded_file, stats, workout_type)
 
     # Remove the temp file after processing
     os.remove(temp_file_path)

@@ -18,12 +18,12 @@ def plot_monthly_workout_volume(df):
     plt.ylabel("Number of Workouts")
     st.pyplot(plt)
 
-def plot_workout_type_distribution(df, workout_type):
+def plot_workout_type_distribution(df, workout_type=None):
     if 'workout_type' not in df.columns:
-        st.warning("No workout_type column found.")
+        st.warning("No 'workout_type' column found in workout log.")
         return
-
-    type_counts = df[workout_type].value_counts()
+    
+    type_counts = df['workout_type'].value_counts()
 
     plt.figure(figsize=(8, 6))
     type_counts.plot(kind='barh', color='skyblue')
@@ -31,3 +31,6 @@ def plot_workout_type_distribution(df, workout_type):
     plt.xlabel("Number of Sessions")
     plt.ylabel("Workout Type")
     st.pyplot(plt)
+
+    if workout_type and workout_type in type_counts:
+        st.markdown(f"🔍 **Current workout type:** {workout_type} — {type_counts[workout_type]} sessions")
